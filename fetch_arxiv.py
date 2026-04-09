@@ -172,7 +172,7 @@ def stage2_summarize(papers, deepseek_key):
     return response.choices[0].message.content
 
 
-def send_to_wechat(title, content, sct_key):
+def send_to_chat(title, content, sct_key):
     url = f"https://sctapi.ftqq.com/{sct_key}.send"
     if len(content) > 4000:
         content = content[:4000] + "\n\n...（已截断）"
@@ -192,7 +192,7 @@ def main():
     print(f"共获取 {len(papers)} 篇")
 
     if not papers:
-        send_to_wechat(f"arxiv日报 {today_str}", "今日暂无新论文", sct_key)
+        send_to_chat(f"arxiv日报 {today_str}", "今日暂无新论文", sct_key)
         return
 
     selected = stage1_filter(papers, deepseek_key)
@@ -200,7 +200,7 @@ def main():
 
     title = f"arxiv日报 {today_str} | 精选{len(selected)}篇"
     print("推送微信中...")
-    result = send_to_we(title, summary, sct_key)
+    result = send_to_wechat(title, summary, sct_key)
     print(f"完成：{result}")
 
 
