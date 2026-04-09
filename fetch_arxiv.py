@@ -160,7 +160,7 @@ def stage2_summarize(papers, deepseek_key):
             last_error = e
 
     # 所有 New API 失败，回退到 DeepSeek
-    print(f"所有 New API 均失败（{last_error}），回退到 DeepSeek...")
+    print(f"所有 New API 均失败（{last_error}），回退 DeepSeek...")
     client = OpenAI(api_key=deepseek_key, base_url="https://api.deepseek.com/v1")
     response = client.chat.completions.create(
         model="deepseek-chat",
