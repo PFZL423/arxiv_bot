@@ -172,14 +172,37 @@ def stage2_summarize(papers, deepseek_key):
     return response.choices[0].message.content
 
 
+
 def send_to_wechat(title, content, sct_key):
     url = f"https://sctapi.ftqq.com/{sct_key}.send"
-    if len(content) > 4000:
-        content = content[:4000] + "\n\n...（已截断）"
-    resp = requests.post(url, data={'title': title, 'desp': content}, timeout=10)
-    resp.raise_for_status()
-    return resp.json()
+    limit = 3800  # 留余量
 
+    if len(content) <= limit:
+        resp = requests.post(url, data={'title': title, 'desp': content}, timeout=10)
+        resp.raise_for_status()
+        return [resp.json()]
+
+    # 超长则按论文条目切割，尽量不在一篇论文中间截断
+    chunks = []
+    current = ""
+    for block in content.split("\n**"):
+        piece = ("\n**" + block) if current else block
+        if len(current) + len(piece) > limit:
+            if current:
+                chunks.append(current)
+            current = piece
+        else:
+            current += piece
+    if current:
+        chunks.append(current)
+
+    results = []
+    for i, chunk in enumerate(chunks, 1):
+        part_title = f"{title}（{i}/{len(chunks)}）"
+        resp = requests.post(url, data={'title': part_title, 'desp': chunk}, timeout=10)
+        resp.raise_for_status()
+        results.append(resp.json())
+    return results
 
 def main():
     sct_key = os.environ['SCT_KEY']
