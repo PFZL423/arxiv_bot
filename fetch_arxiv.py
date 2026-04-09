@@ -77,7 +77,7 @@ def stage1_filter(papers, deepseek_key):
 19"""
 
     response = client.chat.completions.create(
-        model="deepseek-chat",
+        model="deepseek-reasoner",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=200,
     )
@@ -163,7 +163,7 @@ def stage2_summarize(papers, deepseek_key):
     print(f"所有 New API 均失败（{last_error}），回退 DeepSeek...")
     client = OpenAI(api_key=deepseek_key, base_url="https://api.deepseek.com/v1")
     response = client.chat.completions.create(
-        model="deepseek-chat",
+        model="deepseek-reasoner",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=3000,
         timeout=90,
@@ -200,7 +200,7 @@ def main():
 
     title = f"arxiv日报 {today_str} | 精选{len(selected)}篇"
     print("推送微信中...")
-    result = send_to_wechat(title, summary, sct_key)
+    result = send_to_we(title, summary, sct_key)
     print(f"完成：{result}")
 
 
