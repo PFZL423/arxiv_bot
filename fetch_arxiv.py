@@ -54,7 +54,7 @@ def stage1_filter(papers, deepseek_key):
 - 无人机/UAV自主导航、运动规划
 - 视觉语言导航（VLN）
 - 强化学习 + 机器人/无人机
-- SLAM、视觉里程计、状态估计
+世界模型方面领域的论文权重最高，VLN的权重最低
 
 以下是今日{len(papers)}篇论文。请按相关度筛选出{MIN_PAPERS}-{MAX_PAPERS}篇最相关的论文。
 要求：
