@@ -8,7 +8,7 @@ import os
 CATEGORIES = ['cs.RO', 'cs.AI']
 MIN_PAPERS = 10
 MAX_PAPERS = 20
-NEWAPI_BASE_URL = "https://hone.vvvv.ee"
+NEWAPI_BASE_URL = "https://hone.vvvv.ee/"
 NEWAPI_MODEL = "claude-sonnet-4-6"
 # ──────────────────────────────────────────────────────
 
