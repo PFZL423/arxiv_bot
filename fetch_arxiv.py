@@ -121,7 +121,7 @@ def stage2_summarize(papers, deepseek_key):
         cats = ', '.join(p['categories'][:2])
         papers_text += f"{i}. [{cats}] {p['title']}\n摘要：{p['abstract'][:300]}\n链接：{p['link']}\n\n"
 
-    prompt = f"""你是无人机导航与世界模型方向的科研助手，读者是该方向的大二本科生，正在入门阶段。
+    prompt = f"""你是无人机导航与世界模型方向的科研助手，读者是该方向的博一博士生，正在入门阶段。
 
 对以下{len(papers)}篇论文，每篇给出详细的中文解读，格式严格如下：
 
