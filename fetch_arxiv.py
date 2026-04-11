@@ -12,12 +12,25 @@ NEWAPI_BASE_URL = "https://hone.vvvv.ee/"
 NEWAPI_MODEL = "claude-sonnet-4-6"
 # ──────────────────────────────────────────────────────
 
+
 def fetch_arxiv_papers(categories, max_results=200):
+    import time
     query = "+OR+".join([f"cat:{cat}" for cat in categories])
-    url = (f"http://export.arxiv.org/api/query"
+    url = (f"https://export.arxiv.org/api/query"
            f"?search_query={query}&sortBy=submittedDate&sortOrder=descending&max_results={max_results}")
-    response = requests.get(url, timeout=30)
-    response.raise_for_status()
+    headers = {'User-Agent': 'arxiv-bot/1.0 (mailto:arxiv-bot@example.com)'}
+
+    for attempt in range(5):
+        response = requests.get(url, headers=headers, timeout=30)
+        if response.status_code == 429:
+            wait = 2 ** attempt * 10  # 10s, 20s, 40s, 80s, 160s
+            print(f"arxiv API 限流，{wait}秒后重试（第{attempt+1}次）...")
+            time.sleep(wait)
+            continue
+        response.raise_for_status()
+        break
+    else:
+        response.raise_for_status()
 
     ns = {'atom': 'http://www.w3.org/2005/Atom'}
     root = ET.fromstring(response.text)
@@ -37,7 +50,6 @@ def fetch_arxiv_papers(categories, max_results=200):
         papers.append({'title': title, 'abstract': abstract, 'link': link, 'categories': cats})
 
     return papers
-
 
 def stage1_filter(papers, deepseek_key):
     """阶段1：DeepSeek 筛选相关论文，返回论文子集（10-20篇）"""
